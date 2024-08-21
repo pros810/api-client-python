@@ -67,6 +67,7 @@ class Campaign(Model):
         'smtp': None,
         'url': None,
         'groups': [],
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -129,7 +130,8 @@ class CampaignSummary(Model):
         'send_by_date': None,
         'launch_date': None,
         'completed_date': None,
-        'stats': None
+        'stats': None,
+        'tenant_id': None
     }
 
     def __init__(self):
@@ -157,7 +159,8 @@ class Stat(Model):
         'clicked': None,
         'submitted_data': None,
         'email_reported': None,
-        'error': None
+        'error': None,
+        'tenant_id': None
     }
 
     def __init__(self):
@@ -181,6 +184,7 @@ class CampaignResults(Model):
         'results': [],
         'status': None,
         'timeline': [],
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -215,7 +219,8 @@ class Result(Model):
         'ip': None,
         'latitude': None,
         'longitude': None,
-        'status': None
+        'status': None,
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -236,7 +241,8 @@ class TimelineEntry(Model):
         'email': None,
         'time': None,
         'message': None,
-        'details': None
+        'details': None,
+        'tenant_id': None
     }
 
     def __init__(self):
@@ -264,7 +270,8 @@ class User(Model):
         'first_name': None,
         'last_name': None,
         'email': None,
-        'position': None
+        'position': None,
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -286,7 +293,8 @@ class Group(Model):
         'id': None,
         'name': None,
         'modified_date': datetime.now(tzlocal()),
-        'targets': []
+        'targets': [],
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -318,7 +326,8 @@ class SMTP(Model):
         'from_address': None,
         'ignore_cert_errors': False,
         'modified_date': datetime.now(tzlocal()),
-        'headers': []
+        'headers': [],
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -344,7 +353,8 @@ class Template(Model):
         'html': None,
         'modified_date': datetime.now(tzlocal()),
         'subject': None,
-        'attachments': []
+        'attachments': [],
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -375,7 +385,8 @@ class Page(Model):
         'modified_date': datetime.now(tzlocal()),
         'capture_credentials': False,
         'capture_passwords': False,
-        'redirect_url': None
+        'redirect_url': None,
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -411,7 +422,8 @@ class Webhook(Model):
         'name': None,
         'url': None,
         'secret': None,
-        'is_active': None
+        'is_active': None,
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -440,7 +452,8 @@ class IMAP(Model):
         'delete_reported_campaign_email': None,
         'last_login': None,
         'modified_date': None,
-        'imap_freq': None
+        'imap_freq': None,
+        'tenant_id': None
     }
 
     def __init__(self, **kwargs):
@@ -493,3 +506,25 @@ class Error(Exception, Model):
             if key in cls._valid_properties:
                 setattr(error, key, val)
         return error
+
+class Tenant(Model):
+    _valid_properties = {
+        'id': None,
+        'guid': None, 
+        'tenant_name': None,  
+        'tenant_identifier': None, 
+    }
+
+    def __init__(self, **kwargs):
+        """ Initialize a new Tenant instance """
+        for key, default in Tenant._valid_properties.items():
+            setattr(self, key, kwargs.get(key, default))
+
+    @classmethod
+    def parse(cls, json):
+        """ Parse a JSON object into a Tenant instance """
+        tenant = cls()
+        for key, val in json.items():
+            if key in cls._valid_properties:
+                setattr(tenant, key, val)
+        return tenant

@@ -1,7 +1,7 @@
 import requests
 
 from gophish.api import (campaigns, groups, imap, pages, smtp, templates,
-                         webhooks)
+                         webhooks, tenants)
 
 DEFAULT_URL = 'https://localhost:3333'
 
@@ -43,3 +43,4 @@ class Gophish(object):
         self.smtp = smtp.API(self.client)
         self.templates = templates.API(self.client)
         self.webhooks = webhooks.API(self.client)
+        self.tenants = tenants.API(self.client)
